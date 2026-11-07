@@ -1,0 +1,13 @@
+#!/bin/bash
+PB=123456
+B=http://127.0.0.1:8080
+export XDG_RUNTIME_DIR=/run/user/1000 WAYLAND_DISPLAY=wayland-0
+tap() { echo "$PB" | sudo -S -p '' python3 /opt/zhikong/app/tools/touch_test.py "$1" "$2" > /dev/null 2>&1; }
+
+echo "=== 连点两次返回键（第一次可能只抢焦点）==="
+tap 645 24; sleep 0.6
+tap 645 24; sleep 1.5
+grep -E "\[ui\]" /opt/zhikong/logs/backend.out | tail -4
+echo "=== 状态 ==="
+curl -s $B/api/state | python3 -c "import sys,json;d=json.load(sys.stdin);print('  step=',d['step'],'guest=',d.get('guest'))"
+grim /tmp/back_after3.png

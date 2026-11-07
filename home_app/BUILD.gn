@@ -1,0 +1,23 @@
+# Copyright (c) 2024 iSoftStone Education Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+
+import("//build/lite/config/component/lite_component.gni")
+
+static_library("zh_home") {
+  sources = [
+    "zh_home.c",
+    "lcd.c",
+  ]
+
+  include_dirs = [
+    "//device/rockchip/rk2206/sdk_liteos/include",
+    "//base/iot_hardware/peripheral/interfaces/kits",
+    ".",
+  ]
+
+  cflags = [
+    "-Wno-unused-variable",
+    "-Wno-unused-but-set-variable",
+    "-Wno-unused-function",
+  ]
+}

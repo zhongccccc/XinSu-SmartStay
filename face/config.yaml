@@ -1,0 +1,60 @@
+# 酒店入住一体机 · 身份证照 vs 现场抓拍 人脸比对配置
+#
+# 所有阈值都必须在本机、本摄像头、真实点位用真实样本标定后再上线。
+# 标定脚本：python scripts/calibrate.py --pairs pairs.csv
+
+models:
+  # 检测器：yunet（推荐，框 + 5 关键点都可靠）| yolov5face（官方 INT8，框准，关键点在本导出里不可用）
+  detector: yunet_ort      # K1 上 OpenCV 4.6 无法加载 YuNet，改用 ORT 推理
+  yunet: models/face_detection_yunet_2023mar.onnx
+  yolov5face: models/yolov5n-face_320_cut.q.onnx
+  # 默认用 MobileFaceNet（1.2 MB，快）。
+  # 备选：models/w600k_r50.q.onnx（43 MB，512 维）——实测在暗光/低质量抓拍上
+  # 判别力明显更好（同人 0.32 / 异人 0.06），但阈值要换、速度慢 3~4 倍。
+  arcface: models/arcface_mobilefacenet_cut.q.onnx
+
+runtime:
+  # 依次尝试；K1 上把 SpaceMITExecutionProvider 放第一位
+  providers:
+    - CPUExecutionProvider
+  num_threads: 4
+
+detector:
+  input_size: 320
+  conf_threshold: 0.6
+  iou_threshold: 0.45
+  max_faces: 5
+
+quality:
+  # 现场照人脸框宽度（原图像素）下限；720p 下建议 160，1080p 下 200
+  min_face_px: 160
+  # 对齐后 112x112 灰度图的拉普拉斯方差，低于此值视为模糊
+  blur_min: 35.0
+  brightness_min: 60.0
+  brightness_max: 200.0
+  # 5 点对齐后的平均重投影误差（像素），越大说明姿态越偏
+  align_err_max: 6.0
+
+match:
+  # 双阈值：>= high 通过；< low 重试；中间转人工
+  # 这组值配 MobileFaceNet。换成 R50 后分值整体低一档，需同步改成 ~0.30/0.20。
+  # 两个数都只基于少量样本，上线前必须用真实样本重标。
+  t_high: 0.45
+  t_low: 0.32
+  # 多帧聚合方式：median | max | mean
+  aggregate: median
+  # 至少要有多少帧通过质量门控才给结论
+  min_valid_frames: 2
+
+capture:
+  width: 1280
+  height: 720
+  burst: 4
+  burst_interval_ms: 120
+  warmup_frames: 8
+
+store:
+  embed_db: data/embeddings.db
+  audit_log: data/verify_audit.jsonl
+  # 身份证号只存加盐哈希，不落明文
+  hash_salt: change-me-per-site

@@ -1,0 +1,403 @@
+:root{
+  --bg:#0b1020; --bg2:#121a33; --card:#182344; --line:#27335c;
+  --fg:#eaf0ff; --dim:#8fa0c8; --acc:#3fa9f5; --acc2:#22d3a6;
+  --warn:#ffb020; --bad:#ff5a6a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#05070f;overflow:hidden;
+  font-family:"Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",sans-serif;color:var(--fg)}
+body{display:flex;align-items:center;justify-content:center}
+.stage{
+  width:800px;height:480px;position:absolute;left:50%;top:50%;
+  transform-origin:center center;
+  background:radial-gradient(880px 520px at 18% 0%,#16224a 0%,var(--bg) 55%,#05070f 100%);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* 顶栏 */
+.topbar{height:48px;flex:0 0 48px;display:flex;align-items:center;gap:10px;
+  padding:0 14px;border-bottom:1px solid rgba(120,150,220,.16);background:rgba(9,14,30,.6)}
+.brand{display:flex;align-items:center;gap:8px}
+.logo{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+  font-weight:800;font-size:12px;color:#04121f;
+  background:linear-gradient(135deg,var(--acc2),var(--acc))}
+.brand-txt{display:flex;flex-direction:column;line-height:1.15}
+.brand-txt b{font-size:13px;letter-spacing:.5px}
+.brand-txt span{font-size:10px;color:var(--dim)}
+.steps{display:flex;gap:6px;margin:0 auto}
+.steps i{font-style:normal;font-size:10px;color:var(--dim);padding:3px 8px;border-radius:99px;
+  background:rgba(255,255,255,.04);border:1px solid transparent;transition:.25s}
+.steps i.on{color:#05202f;background:linear-gradient(135deg,var(--acc2),var(--acc));
+  font-weight:700;border-color:transparent}
+.steps i.done{color:var(--acc2);border-color:rgba(34,211,166,.5)}
+.topright{display:flex;align-items:center;gap:8px}
+.clock{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
+.ghost{background:rgba(63,169,245,.12);border:1px solid rgba(63,169,245,.35);color:var(--acc);
+  font-size:11px;padding:5px 10px;border-radius:99px;cursor:pointer}
+.ghost:active{transform:scale(.96)}
+.backbtn{background:rgba(255,255,255,.06);border:1px solid rgba(180,200,240,.35);
+  color:#dbe6ff;font-size:11px;padding:5px 10px;border-radius:99px;cursor:pointer}
+.backbtn:active{transform:scale(.96)}
+.backbtn.hide{display:none}
+
+/* 主体 */
+.main{position:relative;flex:1;overflow:hidden}
+.screen{position:absolute;inset:0;padding:12px 16px;display:none;animation:fade .28s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* 待机 */
+#scr-idle{display:none}
+#scr-idle.on{display:flex;gap:14px;align-items:center}
+.idle-hero{flex:1;min-width:0}
+.idle-title{font-size:40px;font-weight:800;letter-spacing:6px;
+  background:linear-gradient(120deg,#eaf0ff,#7fd2ff 60%,#22d3a6);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.idle-sub{color:var(--dim);font-size:13px;margin:4px 0 14px;letter-spacing:1px}
+.cta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  width:100%;max-width:330px;padding:14px 18px;border-radius:16px;border:0;cursor:pointer;
+  color:#04202f;background:linear-gradient(135deg,var(--acc2),var(--acc));
+  box-shadow:0 10px 30px rgba(34,211,166,.25)}
+.cta span{font-size:17px;font-weight:800;letter-spacing:1px}
+.cta em{font-style:normal;font-size:11px;opacity:.75}
+.cta:active{transform:scale(.98)}
+.cta.small{max-width:210px;padding:10px 16px}
+.cta.small span{font-size:14px}
+.idle-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.idle-tags span{font-size:10px;color:#b9c8ea;padding:4px 8px;border-radius:6px;
+  background:rgba(120,160,255,.08);border:1px solid rgba(120,160,255,.15)}
+.idle-aside{width:180px;display:flex;flex-direction:column;gap:8px}
+.stat{background:linear-gradient(135deg,rgba(63,169,245,.12),rgba(34,211,166,.06));
+  border:1px solid rgba(120,160,255,.15);border-radius:12px;padding:8px 10px;text-align:center}
+.stat b{font-size:22px;display:block;color:#9fe6ff}
+.stat b small{font-size:11px;color:var(--dim)}
+.stat span{font-size:10px;color:var(--dim)}
+
+/* 步骤通用两栏 */
+.step-body{display:flex;gap:18px;align-items:center;height:100%}
+.step-left{width:300px;display:grid;place-items:center;flex:0 0 300px}
+.step-right{flex:1;min-width:0}
+.step-right h2{font-size:24px;line-height:1.35;margin:0 0 8px;letter-spacing:1px}
+.hint{color:var(--dim);font-size:12px;margin:0 0 10px;line-height:1.5}
+.link{background:none;border:0;color:#5b7099;font-size:11px;text-decoration:underline;
+  cursor:pointer;padding:6px 0}
+
+/* 身份证动画 */
+.card-anim{width:270px;height:170px;position:relative;border-radius:14px;overflow:hidden;
+  background:linear-gradient(135deg,#1b2a4e,#101a33);border:1px solid #2b3b66;
+  box-shadow:0 18px 40px rgba(0,0,0,.45);animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-5px)}}
+.card-face{position:absolute;inset:10px;border-radius:8px;
+  background:linear-gradient(135deg,#f2f6ff,#d8e2f5);color:#1a2440;padding:10px}
+.card-photo{width:48px;height:60px;border-radius:4px;background:#b9c6dd;float:left;margin-right:10px}
+.card-lines i{display:block;height:7px;border-radius:3px;background:#a9b8d4;margin:7px 0}
+.card-lines i:nth-child(1){width:60%}.card-lines i:nth-child(2){width:45%}.card-lines i:nth-child(3){width:70%}
+.card-chip{position:absolute;right:10px;bottom:8px;font-size:10px;color:#4b5a78;letter-spacing:2px}
+.scanline{position:absolute;left:0;right:0;height:26px;
+  background:linear-gradient(180deg,transparent,rgba(63,169,245,.55),transparent);
+  animation:scan 1.8s linear infinite}
+@keyframes scan{0%{top:-26px}100%{top:170px}}
+.progress{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;width:240px}
+.progress .bar{height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));
+  transition:width .3s}
+
+/* 摄像头 */
+.cam-wrap{position:relative;width:300px;height:214px;border-radius:14px;overflow:hidden;
+  background:#0a1020;border:1px solid #26325a;display:grid;place-items:center}
+.cam-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.cam-fallback{position:absolute;color:#4c5d84;font-size:12px}
+.face-oval{position:absolute;left:50%;top:48%;width:120px;height:152px;transform:translate(-50%,-50%);
+  border:2px dashed rgba(34,211,166,.75);border-radius:50%;box-shadow:0 0 24px rgba(34,211,166,.25)}
+
+/* 选房 */
+.room-head{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.room-head h2{font-size:18px;margin:0}
+.room-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:98px;gap:8px;
+  height:calc(100% - 34px);overflow-y:auto;align-content:start;padding-right:2px}
+.room{border-radius:12px;padding:8px;cursor:pointer;position:relative;min-height:0;
+  background:linear-gradient(160deg,rgba(63,169,245,.10),rgba(34,211,166,.04));
+  border:1px solid rgba(120,160,255,.18);transition:.15s}
+.room:active{transform:scale(.97)}
+.room b{font-size:19px;letter-spacing:1px;display:block}
+.room .t{font-size:10px;color:#b9c8ea}
+.room .p{position:absolute;right:8px;bottom:8px;font-size:14px;color:#9fe6ff;font-weight:700}
+.room .p small{font-size:9px;color:var(--dim);font-weight:400}
+.room .tag{display:inline-block;font-size:9px;color:#8fe0c6;background:rgba(34,211,166,.12);
+  padding:1px 5px;border-radius:4px;margin:4px 4px 0 0}
+
+/* 支付 */
+.pay-left{display:flex;flex-direction:column;gap:10px;align-items:center}
+.amount{display:flex;align-items:baseline;gap:4px;color:#9fe6ff}
+.amount small{font-size:22px}.amount b{font-size:48px;line-height:1;letter-spacing:1px}
+.scanbox{position:relative;width:152px;height:152px;border-radius:14px;overflow:hidden;
+  background:radial-gradient(circle at 50% 50%,rgba(63,169,245,.12),rgba(0,0,0,0) 70%);
+  border:1px dashed rgba(63,169,245,.35);display:grid;place-items:center}
+.scanbox:before,.scanbox:after{content:"";position:absolute;width:26px;height:26px;
+  border:3px solid var(--acc2)}
+.scanbox:before{left:8px;top:8px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.scanbox:after{right:8px;bottom:8px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+.scanline2{position:absolute;left:6px;right:6px;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--acc2),transparent);
+  animation:scan2 1.8s ease-in-out infinite}
+@keyframes scan2{0%{top:14%}50%{top:84%}100%{top:14%}}
+.scanbox span{font-size:11px;color:var(--dim);letter-spacing:3px}
+
+/* 房卡 */
+.rfid-anim{position:relative;width:190px;height:190px;display:grid;place-items:center}
+.rfid-ring{position:absolute;width:130px;height:130px;border-radius:50%;
+  border:2px solid rgba(34,211,166,.55);animation:pulse 2s ease-out infinite}
+.rfid-ring.d2{animation-delay:.9s}
+@keyframes pulse{0%{transform:scale(.5);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.rfid-core{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-size:13px;
+  color:#05202f;font-weight:800;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--acc2),var(--acc));box-shadow:0 0 40px rgba(34,211,166,.4)}
+
+/* 下发 */
+.issue-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.issue-wrap h2{font-size:19px;margin:0}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.12);
+  border-top-color:var(--acc2);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 完成 */
+.done-wrap{height:100%;display:flex;align-items:center;gap:20px;padding:0 8px}
+.done-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:26px;
+  color:#04202f;background:linear-gradient(135deg,var(--acc2),var(--acc));flex:0 0 auto}
+.done-room{display:flex;flex-direction:column;line-height:1}
+.done-room small{font-size:11px;color:var(--dim)}
+.done-room b{font-size:52px;letter-spacing:4px;color:#9fe6ff}
+.done-info{flex:1;display:flex;gap:10px}
+.done-info div{background:rgba(255,255,255,.04);border:1px solid rgba(120,160,255,.14);
+  border-radius:10px;padding:8px 10px;min-width:96px}
+.done-info span{display:block;font-size:10px;color:var(--dim);margin-bottom:3px}
+.done-info b{font-size:15px;letter-spacing:1px}
+
+/* 语音面板 */
+.sheet{position:absolute;left:0;right:0;bottom:0;height:0;overflow:hidden;
+  background:rgba(10,16,32,.98);border-top:1px solid rgba(120,160,255,.2);
+  transition:height .25s ease;display:flex;flex-direction:column;z-index:9}
+.sheet.on{height:330px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;
+  border-bottom:1px solid rgba(120,160,255,.12);font-size:12px}
+.close{background:none;border:0;color:var(--dim);font-size:20px;line-height:1;cursor:pointer}
+.chat{flex:1;overflow-y:auto;padding:8px 12px;font-size:12px;display:flex;flex-direction:column;gap:6px}
+.msg{max-width:78%;padding:6px 10px;border-radius:10px;line-height:1.45}
+.msg.me{align-self:flex-end;background:rgba(63,169,245,.22);border:1px solid rgba(63,169,245,.35)}
+.msg.bot{align-self:flex-start;background:rgba(34,211,166,.12);border:1px solid rgba(34,211,166,.28)}
+.quick{display:flex;gap:6px;padding:6px 12px;flex-wrap:wrap}
+.quick button{font-size:11px;padding:5px 9px;border-radius:99px;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(120,160,255,.2);color:#c9d7f5}
+.say-row{display:flex;gap:8px;padding:8px 12px 12px}
+.say-row input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(120,160,255,.22);
+  border-radius:10px;color:var(--fg);padding:0 10px;font-size:12px;outline:none}
+.mic,.send{border:0;border-radius:10px;padding:8px 12px;font-size:12px;cursor:pointer;color:#04202f;
+  background:linear-gradient(135deg,var(--acc2),var(--acc));font-weight:700}
+.mic.rec{background:linear-gradient(135deg,#ff8a5c,#ff5a6a)}
+
+/* 设备栏 */
+.devbar{flex:0 0 34px;height:34px;display:flex;align-items:center;gap:6px;padding:0 12px;
+  border-top:1px solid rgba(120,150,220,.14);background:rgba(8,12,26,.72);overflow:hidden}
+.dev{display:flex;align-items:center;gap:4px;font-size:10px;color:#8ea1c9;
+  padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.03);white-space:nowrap}
+.dev .dot{width:5px;height:5px;border-radius:50%;background:var(--bad)}
+.dev.ok .dot{background:var(--acc2);box-shadow:0 0 6px var(--acc2)}
+.dev.off{opacity:.55}
+.devbar .spacer{flex:1}
+.devbar .ver{font-size:9px;color:#3f4f70}
+
+/* 长按 logo 退出确认 */
+.brand{cursor:default;-webkit-user-select:none;user-select:none}
+.exitmask{position:absolute;inset:0;background:rgba(4,8,18,.78);z-index:30;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.exitmask.on{display:flex}
+.exitbox{background:linear-gradient(160deg,#16224a,#101a33);border:1px solid rgba(120,160,255,.25);
+  border-radius:16px;padding:18px 22px;text-align:center;min-width:280px}
+.exitbox b{font-size:16px;letter-spacing:1px}
+.exitbox p{font-size:11px;color:var(--dim);margin:6px 0 14px}
+.exitbtns{display:flex;gap:10px;justify-content:center}
+.exitbtns button{border-radius:10px;padding:9px 16px;font-size:13px;cursor:pointer}
+.danger{background:linear-gradient(135deg,#ff8a5c,#ff5a6a);border:0;color:#2a0508;font-weight:700}
+
+/* 门锁键盘 */
+.pinbox{background:linear-gradient(160deg,#16224a,#101a33);border:1px solid rgba(120,160,255,.25);
+  border-radius:16px;padding:14px 18px;text-align:center;min-width:300px}
+.pintitle{font-size:13px;color:#9fb6e6;letter-spacing:1px}
+.pindisp{font-size:26px;letter-spacing:8px;margin:8px 0 4px;font-weight:700;color:#eaf2ff}
+.pinmsg{font-size:11px;color:var(--dim);margin-bottom:10px;min-height:15px}
+.pingrid{display:grid;grid-template-columns:repeat(3,72px);gap:8px;justify-content:center;margin-bottom:10px}
+.pingrid button{height:44px;border-radius:10px;font-size:18px;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid rgba(160,190,255,.25);color:#e8f1ff}
+.pingrid button:active{transform:scale(.95);background:rgba(63,169,245,.35)}
+.pinmsg.ok{color:#46e0a8}
+.pinmsg.bad{color:#ff7a8a}
+
+/* 扫码提示 */
+.toast{position:absolute;left:50%;top:56px;transform:translate(-50%,-12px);
+  padding:8px 16px;border-radius:12px;font-size:13px;letter-spacing:1px;
+  background:linear-gradient(135deg,rgba(34,211,166,.95),rgba(63,169,245,.95));
+  color:#04202f;font-weight:700;opacity:0;pointer-events:none;
+  transition:opacity .2s, transform .2s;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 完成页按钮组 */
+.done-actions{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.done-actions .ghost{white-space:nowrap}
+/* 待机页退房入口 + 退房面板 */
+.idle-checkout{margin-top:30px;font-size:12px;padding:8px 16px;border-radius:10px;position:relative;z-index:6}
+.co-box{min-width:360px}
+.co-list{max-height:230px;overflow-y:auto;margin:10px 0;display:flex;flex-direction:column;gap:6px}
+.co-item{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:10px;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid rgba(160,190,255,.22);color:#e8f1ff;font-size:13px}
+.co-item:hover{background:rgba(63,169,245,.28)}
+.co-item b{font-size:15px;color:#7fd4ff}
+.co-empty{color:#8fa4c8;font-size:13px;padding:14px 0}
+/* 已订房：置灰 + 角标 */
+.room-busy{opacity:.45;cursor:not-allowed;position:relative;filter:grayscale(.6)}
+.room-busy .busy-badge{position:absolute;top:6px;right:6px;background:#ff6b6b;color:#fff;
+  font-size:10px;padding:2px 6px;border-radius:6px;font-weight:700}
+/* 刷卡退房结果 */
+#checkoutOk{z-index:60}
+.co-ok-box{background:linear-gradient(160deg,#0f2f2a,#0b1f1c);border:1px solid rgba(70,224,168,.45);
+  border-radius:20px;padding:28px 48px;text-align:center;min-width:320px}
+.co-ok-icon{font-size:52px;color:#46e0a8;line-height:1}
+.co-ok-title{font-size:20px;color:#eaf2ff;margin-top:6px;letter-spacing:2px}
+.co-ok-room{font-size:56px;font-weight:800;color:#7fd4ff;line-height:1.1;margin:6px 0}
+.co-ok-sub{font-size:13px;color:#9fb6e6}
+.co-ok-box.bad{border-color:rgba(255,120,140,.5)}
+.co-ok-box.bad .co-ok-icon,.co-ok-box.bad .co-ok-room{color:#ff7a8a}
+
+/* 完成页强化 */
+.done-info .bigcode{font-size:30px;letter-spacing:4px;color:#7fe3ff;font-weight:800}
+#scr-done{position:relative}
+.done-hint{position:fixed;left:0;right:0;bottom:44px;text-align:center;
+  font-size:13px;color:#8fa4c8;letter-spacing:1px;z-index:5}
+.done-actions .cd{font-size:12px;opacity:.75;margin-left:6px}
+
+/* 房卡跳过 */
+.skip-card{margin-top:14px;font-size:12px;padding:8px 16px;border-radius:10px}
+
+/* 呼叫前台 */
+.call-staff{position:absolute;right:16px;bottom:40px;z-index:30;
+  padding:9px 16px;border-radius:12px;font-size:13px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(255,150,90,.9),rgba(255,90,110,.9));
+  color:#2a0508;border:0;font-weight:700}
+.call-staff:active{transform:scale(.96)}
+
+
+/* 调试/前台功能默认隐藏，?staff=1 时显示 */
+.done-actions .ghost{display:none}
+body.staff .done-actions .ghost{display:inline-flex}
+
+
+/* 退房入口 */
+.co-entry{margin-top:14px;font-size:14px;padding:12px 30px;border-radius:14px;
+  border:1px solid rgba(127,212,255,.45);color:#9fe0ff;background:rgba(20,40,70,.55);
+  cursor:pointer;letter-spacing:2px}
+.co-entry:active{transform:scale(.97)}
+
+/* 退房引导 */
+.co-guide{text-align:center;min-width:360px}
+.guide-card{position:relative;width:110px;height:70px;margin:14px auto 10px;
+  border-radius:10px;background:linear-gradient(135deg,#1b3c5e,#0e2033);
+  border:1px solid rgba(127,212,255,.5);display:flex;align-items:center;justify-content:center}
+.guide-card-icon{font-size:30px;color:#7fd4ff}
+.guide-card-wave{position:absolute;inset:-6px;border-radius:14px;
+  border:2px solid rgba(127,212,255,.35);animation:wv 1.6s ease-out infinite}
+@keyframes wv{0%{opacity:.9;transform:scale(.94)}100%{opacity:0;transform:scale(1.12)}}
+.guide-main{font-size:20px;color:#eaf2ff;margin-top:6px;letter-spacing:1px}
+.guide-sub{font-size:12px;color:#8fa4c8;margin-top:6px}
+.guide-actions{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.guide-actions .ghost{font-size:12px;padding:8px 14px;border-radius:10px}
+
+
+/* 顶栏环境胶囊 */
+.envchip{font-size:12px;color:#9fe0ff;background:rgba(20,40,70,.6);
+  border:1px solid rgba(127,212,255,.3);border-radius:999px;padding:5px 12px;white-space:nowrap}
+
+/* 客房环境面板 */
+.env-panel{margin:8px 14px 4px;padding:12px 14px;border-radius:14px;
+  background:linear-gradient(150deg,rgba(18,34,60,.9),rgba(10,20,34,.9));
+  border:1px solid rgba(127,212,255,.22)}
+.env-head{display:flex;align-items:center;gap:8px;font-size:13px;color:#cfe3ff}
+.env-dot{width:8px;height:8px;border-radius:50%;background:#5a6b85}
+.env-dot.on{background:#3fe08a;box-shadow:0 0 8px rgba(63,224,138,.8)}
+.env-state{font-size:11px;color:#8fa4c8}
+.env-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
+.env-cell{background:rgba(255,255,255,.04);border-radius:10px;padding:6px 4px;text-align:center}
+.env-cell span{display:block;font-size:10px;color:#8fa4c8}
+.env-cell b{font-size:16px;color:#eaf2ff}
+.env-cell i{font-size:10px;color:#8fa4c8;font-style:normal}
+.env-actions{display:flex;gap:8px;margin-top:10px}
+.env-actions .ghost{flex:1;font-size:12px;padding:8px 0;border-radius:10px}
+.env-panel.alarm{border-color:rgba(255,110,130,.6);box-shadow:0 0 16px rgba(255,80,100,.25)}
+
+
+/* 客房环境属于前台功能：客人界面隐藏，前台模式才显示 */
+/* 客房环境面板已从客人界面移除（改为流程自动联动） */
+
+
+/* 前台模式标记 */
+body.staff .brand .logo{box-shadow:0 0 0 2px #ffb347 inset}
+body.staff .brand-txt span::after{content:" · 前台模式";color:#ffb347}
+
+
+/* 完成页两条提示上下排开 */
+#roomReady{bottom:62px;color:#5fe0a8}
+#cardBind{bottom:38px}
+
+
+/* ---------- 管理员模式 ---------- */
+.admin-btn, .admin-badge{display:none}
+body.admin .admin-btn{
+  display:block;position:absolute;right:150px;bottom:40px;z-index:40;
+  padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,#ff9a5a,#ff5a6e);color:#2a0508;border:0;
+  box-shadow:0 6px 18px rgba(255,90,110,.35)}
+body.admin .admin-btn:active{transform:scale(.96)}
+body.admin .admin-badge{
+  display:block;position:absolute;left:50%;top:8px;transform:translateX(-50%);
+  z-index:45;padding:6px 16px;border-radius:999px;font-size:12px;cursor:pointer;
+  background:rgba(255,90,110,.16);border:1px solid rgba(255,90,110,.6);color:#ff9aa8}
+.co-confirm-txt{font-size:17px;color:#eaf2ff;text-align:center;margin:14px 0 6px}
+.co-confirm-sub{font-size:12px;color:#8fa4c8;text-align:center;margin-bottom:16px}
+.co-item{cursor:pointer}
+.co-item:active{background:rgba(255,255,255,.06)}
+
+
+/* ---------- 完成页：拍照留存提醒 ---------- */
+.done-warn{
+  position:fixed;left:50%;bottom:174px;transform:translateX(-50%);
+  width:min(600px,94%);padding:8px 18px;z-index:6;
+  border-radius:12px;text-align:center;
+  background:linear-gradient(180deg,rgba(255,179,71,.18),rgba(255,179,71,.08));
+  border:1px solid rgba(255,179,71,.6);
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+.done-warn .dw-title{
+  font-size:16px;font-weight:800;color:#ffce7a;letter-spacing:1px;margin-bottom:3px;
+}
+.done-warn .dw-title::before{content:"⚠  ";}
+.done-warn .dw-text{font-size:12px;line-height:1.6;color:#f0d9b5}
+
+
+/* 完成页：取走证件提醒 */
+.done-take{
+  position:fixed;left:50%;bottom:86px;transform:translateX(-50%);
+  width:min(600px,94%);padding:8px 18px;z-index:6;
+  border-radius:12px;text-align:center;
+  background:linear-gradient(180deg,rgba(255,179,71,.18),rgba(255,179,71,.08));
+  border:1px solid rgba(255,179,71,.6);
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+.done-take .dw-title{
+  font-size:16px;font-weight:800;color:#ffce7a;letter-spacing:1px;margin-bottom:3px;
+}
+.done-take .dw-title::before{content:"⚠  ";}
+.done-take .dw-text{font-size:12px;line-height:1.6;color:#f0d9b5}
+
+/* 人脸页跳过按钮 */
+#btnFaceSkip{
+  margin-top:10px;font-size:12.5px;padding:10px 18px;opacity:.95;
+  position:relative;z-index:80;pointer-events:auto;
+}

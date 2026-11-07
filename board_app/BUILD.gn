@@ -1,0 +1,13 @@
+# Copyright (c) 2026 芯宿·智控
+static_library("zk_lock") {
+    sources = [
+        "zk_lock.c",
+    ]
+
+    include_dirs = [
+        "//utils/native/lite/include",
+        "//kernel/liteos_m/kal/cmsis",
+        "//base/iot_hardware/peripheral/interfaces/kits",
+        "//kernel/liteos_m/components/shell/include",
+    ]
+}

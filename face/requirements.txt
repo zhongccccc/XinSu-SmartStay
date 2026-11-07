@@ -1,0 +1,6 @@
+# 依赖（Windows 开发 / K1 板端通用）
+# 板端若已通过 apt 安装 spacemit-onnxruntime，可跳过 onnxruntime 这一行
+numpy>=1.21
+opencv-python>=4.8
+onnxruntime>=1.16
+PyYAML>=6.0

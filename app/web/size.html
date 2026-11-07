@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>视口自检</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;color:#0f0;
+    font-family:monospace;display:flex;flex-direction:column;
+    align-items:center;justify-content:center}
+  .big{font-size:52px;font-weight:700}
+  .mid{font-size:22px;color:#0ff;margin-top:10px}
+  #box{margin-top:18px;border:3px solid #f00;width:800px;height:480px;
+    display:flex;align-items:flex-end;justify-content:flex-end;
+    font-size:18px;color:#f80;box-sizing:border-box}
+</style>
+</head>
+<body>
+  <div class="big" id="v">--</div>
+  <div class="mid" id="d">--</div>
+  <div id="box">800x480 红框：若红框超出屏幕说明视口被缩放</div>
+<script>
+  function upd(){
+    document.getElementById('v').textContent = innerWidth + ' x ' + innerHeight;
+    document.getElementById('d').textContent =
+      'dpr=' + devicePixelRatio + '  screen=' + screen.width + 'x' + screen.height
+      + '  visualViewport=' + (window.visualViewport ? Math.round(visualViewport.width) : '?');
+  }
+  upd(); addEventListener('resize', upd);
+</script>
+</body>
+</html>

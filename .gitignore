@@ -1,0 +1,16 @@
+﻿__pycache__/
+*.pyc
+*.pyo
+*.log
+*.img
+*.bin
+*.onnx
+*.wav
+*.bak
+.DS_Store
+Thumbs.db
+node_modules/
+build/
+out/
+data/
+logs/

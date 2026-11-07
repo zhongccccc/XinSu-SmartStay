@@ -1,0 +1,36 @@
+#!/bin/bash
+PB=123456
+cd /opt/zhikong/app
+python3 -m py_compile backend/main.py && echo "COMPILE_OK"
+
+echo "=== 门锁改为硬失败（不再偷偷 mock）==="
+python3 - <<'PY'
+import json
+p = '/opt/zhikong/etc/config.json'
+d = json.load(open(p))
+d['devices'].setdefault('lock', {})
+d['devices']['lock']['transport'] = 'board'      # 硬失败：连不上就报错
+json.dump(d, open(p, 'w'), ensure_ascii=False, indent=2)
+print("lock.transport = board")
+PY
+
+echo "$PB" | sudo -S -p '' systemctl restart zhikong-backend
+sleep 24
+
+echo "=== 板子状态 ==="
+curl -s http://127.0.0.1:8080/api/health > /tmp/r1.json 2>/dev/null
+python3 - <<'PY'
+import json
+try:
+    d = json.load(open('/tmp/r1.json'))
+except Exception as e:
+    print("  health:", e); raise SystemExit
+lk = d.get('lock') or {}
+print("  transport=%s port=%s online=%s mock=%s fw=%s" % (
+    lk.get('transport'), lk.get('port'), lk.get('online'), lk.get('mock'), lk.get('firmware')))
+PY
+
+echo
+echo "=== 重新下发在住订单的凭证 ==="
+curl -s -X POST http://127.0.0.1:8080/api/lock/resync | head -c 400
+echo

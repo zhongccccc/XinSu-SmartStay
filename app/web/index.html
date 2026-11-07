@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>芯宿·智控 自助入住</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="stage" class="stage">
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">芯宿</div>
+      <div class="brand-txt">
+        <b>芯宿·智控</b>
+        <span id="hotelSub">深圳湾科技园店</span>
+      </div>
+    </div>
+    <div class="steps" id="steps">
+      <i data-s="ident">身份</i><i data-s="face">人脸</i><i data-s="room">选房</i>
+      <i data-s="pay">支付</i><i data-s="card">房卡</i><i data-s="done">完成</i>
+    </div>
+    <div class="topright">
+      <button class="backbtn hide" id="btnBack">‹ 返回</button>
+      <div class="clock" id="clock">--:--</div>
+      <button class="ghost" id="btnService">语音服务</button>
+    </div>
+  </header>
+
+  <!-- 主区域 -->
+  <main class="main">
+
+    <!-- 待机 -->
+    <section class="screen" id="scr-idle">
+      <div class="idle-hero">
+        <div class="idle-title">欢迎光临</div>
+        <div class="idle-sub">自助入住 · 30 秒完成 · 无需排队</div>
+        <button class="cta" id="btnStart"><span>触摸屏幕开始入住</span><em>请准备好二代身份证</em></button>
+        <div class="idle-tags">
+          <span>身份证核验</span><span>人脸比对</span><span>在线选房</span>
+          <span>扫码支付</span><span>即出房卡</span><span>门锁授权</span>
+        </div>
+        <button class="ghost co-entry" id="btnCheckoutIdle">我要退房</button>
+      </div>
+      <aside class="idle-aside">
+        <div class="stat"><b>30<small>s</small></b><span>单次入住耗时</span></div>
+        <div class="stat"><b>70<small>%</small></b><span>替代前台人工</span></div>
+        <div class="stat"><b>K1</b><span>RISC-V 端侧推理</span></div>
+      </aside>
+    </section>
+
+    <!-- 身份证 -->
+    <section class="screen" id="scr-ident">
+      <div class="step-body">
+        <div class="step-left">
+          <div class="card-anim" id="idcardAnim">
+            <div class="card-face">
+              <div class="card-photo"></div>
+              <div class="card-lines"><i></i><i></i><i></i></div>
+              <div class="card-chip">居民身份证</div>
+            </div>
+            <div class="scanline"></div>
+          </div>
+        </div>
+        <div class="step-right">
+          <h2>请将二代身份证<br>放在读卡区</h2>
+          <p class="hint" id="identHint">芯片面朝上，平放于感应区，保持 6 秒</p>
+          <div class="progress"><div class="bar" id="identBar"></div></div>
+          <button class="link" id="btnMockId">演示：模拟刷卡</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 人脸 -->
+    <section class="screen" id="scr-face">
+      <div class="step-body">
+        <div class="step-left">
+          <div class="cam-wrap">
+            <img id="camImg" alt="" data-src="/api/camera/stream">
+            <div class="cam-fallback" id="camFallback">摄像头未接入</div>
+            <div class="face-oval"></div>
+          </div>
+        </div>
+        <div class="step-right">
+          <h2>请正对摄像头</h2>
+          <p class="hint" id="faceHint">保持面部在框内，端侧完成活体与比对，数据不出本机</p>
+          <button class="cta small" id="btnFace">立即识别</button>
+            <button class="ghost small" id="btnFaceSkip">跳过人脸（测试）</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 选房 -->
+    <section class="screen" id="scr-room">
+      <div class="room-head">
+        <h2>请选择房间</h2>
+        <span class="hint" id="roomHint">今日可售房型</span>
+      </div>
+      <div class="room-grid" id="roomGrid"></div>
+    </section>
+
+    <!-- 支付 -->
+    <section class="screen" id="scr-pay">
+      <div class="step-body">
+        <div class="step-left pay-left">
+          <div class="amount"><small>¥</small><b id="payAmount">0</b></div>
+          <div class="scanbox"><div class="scanline2"></div><span>付款码</span></div>
+        </div>
+        <div class="step-right">
+          <h2>请将付款码<br>对准扫码器</h2>
+          <p class="hint" id="payHint">支持微信 / 支付宝付款码</p>
+          <button class="link" id="btnMockPay">演示：模拟扫码支付</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 房卡 -->
+    <section class="screen" id="scr-card">
+      <div class="step-body">
+        <div class="step-left">
+          <div class="rfid-anim"><div class="rfid-ring"></div><div class="rfid-ring d2"></div>
+            <div class="rfid-core">RFID</div></div>
+        </div>
+        <div class="step-right">
+          <h2>请将房卡<br>放在读卡区</h2>
+          <p class="hint" id="cardHint">正在写入房号与有效期</p>
+          <button class="link" id="btnMockCard">演示：模拟放卡</button>
+          <button class="ghost skip-card" id="btnSkipCard">跳过，稍后在门锁上刷房卡绑定</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 下发门锁 -->
+    <section class="screen" id="scr-issue">
+      <div class="issue-wrap">
+        <div class="spinner"></div>
+        <h2>正在下发门锁凭证</h2>
+        <p class="hint" id="issueHint">一体机 → K1 网关 → 智能门锁</p>
+      </div>
+    </section>
+
+    <!-- 完成 -->
+    <section class="screen" id="scr-done">
+      <div class="done-wrap">
+        <div class="done-icon">✓</div>
+        <div class="done-room"><small>房间</small><b id="doneRoom">8801</b></div>
+        <div class="done-info">
+          <div><span>临时开门码</span><b id="doneCode" class="bigcode">------</b></div>
+          <div><span>房卡 UID</span><b id="doneCard">--</b></div>
+          <div><span>门锁状态</span><b id="doneLock">已授权</b></div>
+        </div>
+        <div class="done-warn">
+          <div class="dw-title">请立即拍照留存</div>
+          <div class="dw-text">开门码仅在本页显示，返回后不再提供查询。<br>
+            请勿告知他人、勿发到群聊或网络，谨防他人冒用。</div>
+        </div>
+        <div class="done-take">
+          <div class="dw-title">离开前请取走</div>
+          <div class="dw-text">身份证 · 房卡<br>请确认已从读卡区与取卡口带走</div>
+        </div>
+        <div class="done-hint" id="cardBind">开门码可在门锁键盘上输入；若已领房卡，首次刷卡即完成绑定</div>
+        <div class="done-actions">
+          <button class="cta small" id="btnFinish">完成并返回<span class="cd" id="doneCd"></span></button>
+          <button class="ghost" id="btnDoorPad">门锁键盘（演示）</button>
+          <button class="ghost" id="btnCheckout">退房（作废凭证）</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 刷卡退房结果 -->
+    <div class="exitmask" id="checkoutOk">
+      <div class="co-ok-box">
+        <div class="co-ok-icon" id="coIcon">✓</div>
+        <div class="co-ok-title" id="coTitle">退房成功</div>
+        <div class="co-ok-room" id="coRoom">8808</div>
+        <div class="co-ok-sub" id="coSub">开门凭证已作废</div>
+      </div>
+    </div>
+    <!-- 退房引导：请刷卡 -->
+    <div class="exitmask" id="coGuide">
+      <div class="pinbox co-guide">
+        <div class="pintitle">办理退房</div>
+        <div class="guide-card"><div class="guide-card-icon">▣</div><div class="guide-card-wave"></div></div>
+        <div class="guide-main">请将房卡放在读卡区</div>
+        <div class="guide-sub">系统会自动识别您的房间并作废开门凭证</div>
+        <div class="guide-actions">
+          <button class="ghost" id="coGuidePick">没有房卡？输入开门码</button>
+          <button class="ghost" id="coGuideClose">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 无卡退房：输入开门码 -->
+    <div class="exitmask" id="coCode">
+      <div class="pinbox">
+        <div class="pintitle">无卡退房 · 输入开门码</div>
+        <div class="pindisp" id="coCodeDisp">— — — — — —</div>
+        <div class="pinmsg" id="coCodeMsg">请输入入住时显示的 6 位开门码</div>
+        <div class="pingrid">
+          <button data-c="1">1</button><button data-c="2">2</button><button data-c="3">3</button>
+          <button data-c="4">4</button><button data-c="5">5</button><button data-c="6">6</button>
+          <button data-c="7">7</button><button data-c="8">8</button><button data-c="9">9</button>
+          <button data-c="*">*</button><button data-c="0">0</button><button data-c="#">#</button>
+        </div>
+        <button class="ghost" id="coCodeClose">取消</button>
+      </div>
+    </div>
+
+    <!-- 管理员：退房确认 -->
+    <div class="exitmask" id="coConfirm">
+      <div class="pinbox co-box">
+        <div class="pintitle">确认退房</div>
+        <div class="co-confirm-txt" id="coConfirmTxt">确定要为该房间退房吗？</div>
+        <div class="co-confirm-sub">退房后开门码与房卡立即失效</div>
+        <div class="guide-actions">
+          <button class="ghost" id="coCancelBtn">取消</button>
+          <button class="cta small" id="coOkBtn">确认退房</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 退房：选择房间 -->
+    <div class="exitmask" id="checkoutSheet">
+      <div class="pinbox co-box">
+        <div class="pintitle">退房 · 选择房间</div>
+        <div class="co-list" id="coList"></div>
+        <button class="ghost" id="coClose">关闭</button>
+      </div>
+    </div>
+    <!-- 门锁键盘（板端本地校验） -->
+    <div class="exitmask" id="pinPad">
+      <div class="pinbox">
+        <div class="pintitle">门锁键盘 · 板端校验</div>
+        <div class="pindisp" id="pinDisp">— — — — — —</div>
+        <div class="pinmsg" id="pinMsg">输入开门码后按 #</div>
+        <div class="pingrid">
+          <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+          <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+          <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+          <button data-k="*">*</button><button data-k="0">0</button><button data-k="#">#</button>
+        </div>
+        <button class="ghost" id="btnPinClose">关闭</button>
+      </div>
+    </div>
+
+    <!-- 管理员模式 -->
+    <div class="admin-badge" id="adminBadge">管理员模式 · 点此退出</div>
+    <button class="admin-btn" id="btnAdminCheckout">退房管理</button>
+
+    <button class="call-staff" id="btnCallStaff">呼叫前台</button>
+
+    <!-- 语音服务面板 -->
+    <div class="sheet" id="serviceSheet">
+      <div class="sheet-head">
+        <b>语音服务 · 客房助手</b>
+        <button class="close" id="btnCloseService">×</button>
+      </div>
+      <div class="chat" id="chat"></div>
+      <div class="quick" id="quickCmds">
+        <button>送一双拖鞋</button><button>开灯</button><button>关窗帘</button>
+        <button>空调调至26度</button><button>送两瓶矿泉水</button><button>几点退房</button>
+      </div>
+      <div class="say-row">
+        <button class="mic" id="btnMic">🎙 说话</button>
+        <input id="sayInput" placeholder="也可以直接输入，例如：送牙刷">
+        <button class="send" id="btnSend">发送</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 退出遮罩（长按左上角 logo 1.5 秒） -->
+  <div class="exitmask" id="exitMask">
+    <div class="pinbox">
+      <div class="pintitle">退出一体机？</div>
+      <div class="pinmsg">退出后将回到桌面，需重新启动应用</div>
+      <div class="guide-actions">
+        <button class="ghost" id="btnExitCancel">取消</button>
+        <button class="cta small" id="btnExitOk">退出</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设备状态栏 -->
+  <footer class="devbar" id="devbar"></footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
